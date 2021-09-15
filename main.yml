@@ -23,7 +23,7 @@
 
     - name: Update config file for GPSD
       template:
-        src: gpsd.j2
+        src: templates/gpsd.j2
         dest: /etc/default/gpsd
 
     - name: Make sure gpsd is restarted and running
