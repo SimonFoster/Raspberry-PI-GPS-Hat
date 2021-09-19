@@ -5,6 +5,22 @@
 
   tasks:
 
+    - name: Set hostname
+      ansible.builtin.hostname:
+        name: pi42
+
+    # - name: Make sure hciuart is disabled and stopped
+    #     systemd:
+    #       name: hciuart
+    #       enabled: false
+    #       state: stopped
+  
+    # - name: Make sure serial-getty@ttyAMA0.service is disabled and stopped
+    #   systemd:
+    #     name: serial-getty@ttyAMA0.service
+    #     enabled: false
+    #     state: stopped
+
     - name: Update repo and cache
       apt:
         update_cache: yes
@@ -35,10 +51,21 @@
       notify:
         - restart ntp
 
-    - name: Copy clockmaker script
-      copy:
-        src: utils/clockmaker
-        dest: /home/pi/clockmaker
+    - name: enable GPS PPS on boot
+      blockinfile:
+        path: /boot/config.txt
+        block: |
+          # Get 1PPS from HAT pin
+          dtoverlay=pps-gpio,gpiopin=4
+          # Reduce GPU memory split
+          gpu_mem=16
+
+    ##### Find a way to disable the serial console
+
+    # - name: Copy clockmaker script
+    #   copy:
+    #     src: utils/clockmaker
+    #     dest: /home/pi/clockmaker
 
   handlers:
       - name: restart gpsd
