@@ -22,18 +22,23 @@
         - gpsd-clients
 
     - name: Update config file for GPSD
-      template:
+      copy:
         src: templates/gpsd.conf
         dest: /etc/default/gpsd
       notify:
         - restart gpsd
 
     - name: Update config file for NTP
-      template:
+      copy:
         src: templates/ntp.conf
         dest: /etc/ntp.conf
       notify:
         - restart ntp
+
+    - name: Copy clockmaker script
+      copy:
+        src: utils/clockmaker
+        dest: /home/pi/clockmaker
 
   handlers:
       - name: restart gpsd
@@ -50,5 +55,6 @@
           enabled: true
           state: restarted
 
+# Add to /boot/config.txt
 # Enable PPS on GPIO4
 # dtoverlay=pps-gpio,gpiopin=4
