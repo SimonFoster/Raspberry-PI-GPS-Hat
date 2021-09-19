@@ -23,10 +23,17 @@
 
     - name: Update config file for GPSD
       template:
-        src: templates/gpsd.j2
+        src: templates/gpsd.conf
         dest: /etc/default/gpsd
       notify:
         - restart gpsd
+
+    - name: Update config file for NTP
+      template:
+        src: templates/ntp.conf
+        dest: /etc/ntp.conf
+      notify:
+        - restart ntp
 
   handlers:
       - name: restart gpsd
@@ -35,3 +42,13 @@
           daemon_reload: true
           enabled: true
           state: restarted
+
+      - name: restart ntp
+        systemd:
+          name: ntp
+          daemon_reload: true
+          enabled: true
+          state: restarted
+
+# Enable PPS on GPIO4
+# dtoverlay=pps-gpio,gpiopin=4
