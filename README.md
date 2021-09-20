@@ -14,3 +14,4 @@ Rapid 7
 	https://www.rapid7.com/blog/post/2015/07/27/adding-a-gps-time-source-to-ntpd/
 	
 	
+https://blog.thelifeofkenneth.com/2020/03/building-raspberry-pi-stratum-1-ntp.html
