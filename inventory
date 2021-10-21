@@ -1,1 +1,1 @@
-gpsd ansible_host=192.168.68.126 ansible_user=pi
+gpsd ansible_host=192.168.68.129 ansible_user=pi
