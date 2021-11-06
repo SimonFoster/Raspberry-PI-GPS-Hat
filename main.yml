@@ -76,7 +76,3 @@
           daemon_reload: true
           enabled: true
           state: restarted
-
-# Add to /boot/config.txt
-# Enable PPS on GPIO4
-# dtoverlay=pps-gpio,gpiopin=4
