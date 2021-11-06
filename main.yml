@@ -62,11 +62,6 @@
 
     ##### Find a way to disable the serial console
 
-    # - name: Copy clockmaker script
-    #   copy:
-    #     src: utils/clockmaker
-    #     dest: /home/pi/clockmaker
-
   handlers:
       - name: restart gpsd
         systemd:
