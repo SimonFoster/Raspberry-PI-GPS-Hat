@@ -8,18 +8,13 @@
     - name: Set hostname
       ansible.builtin.hostname:
         name: pi42
-
-    - name: Make sure hciuart is disabled and stopped
-      systemd:
-        name: hciuart
-        enabled: false
-        state: stopped
-
-    - name: Make sure serial-getty@ttyAMA0.service is disabled and stopped
-      systemd:
-        name: serial-getty@ttyAMA0.service
-        enabled: false
-        state: stopped
+        
+    - name: Disable the serial console by editing cmdline.txt
+      ansible.builtin.lineinfile:
+      path: /boot/cmdline.txt
+      regexp: '(.*)\s+console=serial\d,\d+\s+(.*)'
+      line: '\1 \2'
+      backrefs: yes
 
     - name: Update repo and cache
       apt:
