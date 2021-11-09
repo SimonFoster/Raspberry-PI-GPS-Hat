@@ -9,17 +9,17 @@
       ansible.builtin.hostname:
         name: pi42
 
-    # - name: Make sure hciuart is disabled and stopped
-    #     systemd:
-    #       name: hciuart
-    #       enabled: false
-    #       state: stopped
-  
-    # - name: Make sure serial-getty@ttyAMA0.service is disabled and stopped
-    #   systemd:
-    #     name: serial-getty@ttyAMA0.service
-    #     enabled: false
-    #     state: stopped
+    - name: Make sure hciuart is disabled and stopped
+      systemd:
+        name: hciuart
+        enabled: false
+        state: stopped
+
+    - name: Make sure serial-getty@ttyAMA0.service is disabled and stopped
+      systemd:
+        name: serial-getty@ttyAMA0.service
+        enabled: false
+        state: stopped
 
     - name: Update repo and cache
       apt:
@@ -31,6 +31,7 @@
         name: "{{ item }}"
         update_cache: yes
       with_items:
+        - git
         - python3
         - ntp
         - pps-tools
