@@ -3,25 +3,50 @@
   hosts: gpsd
   become: yes
 
-  tasks:
+  vars:
+    LOCALE: "en_GB.UTF-8"
+    TIMEZONE: "Europe/London"
+    HOSTNAME: "pi42"
 
-    - name: Set hostname
-      ansible.builtin.hostname:
-        name: pi42
-        
-    - name: Disable the serial console by editing cmdline.txt
-      ansible.builtin.lineinfile:
-        path: /boot/cmdline.txt
-        regexp: '(.*)\s+console=serial\d,\d+\s+(.*)'
-        line: '\1 \2'
-        backrefs: yes
-      notify:
-        - restart
+  tasks:
 
     - name: Update repo and cache
       apt:
         update_cache: yes
         cache_valid_time: 3600
+
+    - name: Set hostname
+      ansible.builtin.hostname:
+        name: "{{ HOSTNAME }}"
+        
+    - name: Set the locale
+      ansible.builtin.shell:
+        cmd: "sudo raspi-config nonint do_change_locale {{ LOCALE }}"
+      changed_when: False
+
+    - name: Set the timezone
+      ansible.builtin.shell:
+        cmd: "sudo raspi-config nonint do_change_timezone {{ TIMEZONE }}"
+      changed_when: False
+
+    - name: Get serial status
+      shell: "raspi-config nonint get_serial"
+      register: serial_status
+      changed_when: False
+
+    - name: Disable serial console if required
+      ansible.builtin.shell:
+        cmd: "raspi-config nonint do_serial 1"
+      when: (serial_status.stdout != '1')
+      notify:
+        - restart
+      
+    # - name: Disable the serial console by editing cmdline.txt
+    #   ansible.builtin.lineinfile:
+    #     path: /boot/cmdline.txt
+    #     regexp: '(.*)\s+console=serial\d,\d+\s+(.*)'
+    #     line: '\1 \2'
+    #     backrefs: yes
 
     - name: Install packages with apt
       apt:
@@ -29,7 +54,7 @@
         update_cache: yes
       with_items:
         - git
-        - python3
+        - neofetch
         - ntp
         - pps-tools
         - gpsd
